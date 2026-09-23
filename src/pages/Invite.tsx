@@ -1,0 +1,8 @@
+import {useEffect,useState} from 'react'
+import {useNavigate,useParams} from 'react-router-dom'
+import Header from '../components/Header'
+import Button from '../components/Button'
+import Toast from '../components/Toast'
+import {JoinRoom} from '../services/online'
+import {LoadPlayerName,SavePlayerName,SaveSession} from '../services/session'
+export default function Invite(){const{code=''}=useParams();const Navigate=useNavigate();const[Name,SetName]=useState('');const[ToastMessage,SetToastMessage]=useState('');const[Loading,SetLoading]=useState(false);useEffect(()=>{void LoadPlayerName().then(Value=>Value&&SetName(Value))},[]);async function Join(){if(!Name.trim())return;try{SetLoading(true);SetToastMessage('');await SavePlayerName(Name);const Result=await JoinRoom(code,Name.trim());await SaveSession({RoomCode:code.toUpperCase(),PlayerId:Result.player_id,SessionToken:Result.session_token,PlayerName:Name.trim()});Navigate(`/room/${code.toUpperCase()}`)}catch(ErrorValue){SetToastMessage(ErrorValue instanceof globalThis.Error?ErrorValue.message:'Не удалось подключиться к комнате')}finally{SetLoading(false)}}return <main className="shell"><Header/><section className="hero compactHero"><div className="eyebrow">ПРИГЛАШЕНИЕ В КОМНАТУ</div><h1>{code.toUpperCase()}</h1><p>Введите ник, под которым вас увидят остальные игроки.</p></section><section className="panel invitePanel"><input autoFocus value={Name} onChange={Event=>SetName(Event.target.value)} onKeyDown={Event=>{if(Event.key==='Enter')void Join()}} placeholder="Ваш ник" maxLength={20}/><Button disabled={!Name.trim()||Loading} onClick={Join}>{Loading?'Подключаемся…':'Присоединиться'}</Button></section><Toast Message={ToastMessage}/></main>}
