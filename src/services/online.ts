@@ -13,6 +13,9 @@ export function LeaveRoom(RoomCode:string,SessionToken:string){return Rpc('leave
 export function KickPlayer(RoomCode:string,SessionToken:string,TargetPlayerId:string){return Rpc('kick_player',{room_code_input:RoomCode,session_token_input:SessionToken,target_player_id_input:TargetPlayerId})}
 export function UpdateOnlineSettings(RoomCode:string,SessionToken:string,Settings:GameSettings){return Rpc('update_room_settings',{room_code_input:RoomCode,session_token_input:SessionToken,settings_input:Settings})}
 export function SubmitClue(RoomCode:string,SessionToken:string,Text:string){return Rpc('submit_clue',{room_code_input:RoomCode,session_token_input:SessionToken,clue_input:Text})}
+export function ContinuePlay(RoomCode:string,SessionToken:string){return Rpc('continue_play',{room_code_input:RoomCode,session_token_input:SessionToken})}
+export function GuessWord(RoomCode:string,SessionToken:string,Guess:string){return Rpc('guess_word',{room_code_input:RoomCode,session_token_input:SessionToken,guess_input:Guess})}
+export function ResolveVoiceGuess(RoomCode:string,SessionToken:string,Correct:boolean){return Rpc('resolve_voice_guess',{room_code_input:RoomCode,session_token_input:SessionToken,correct_input:Correct})}
 export function BeginVoting(RoomCode:string,SessionToken:string){return Rpc('begin_voting',{room_code_input:RoomCode,session_token_input:SessionToken})}
 export function CastVote(RoomCode:string,SessionToken:string,TargetPlayerId:string){return Rpc('cast_vote',{room_code_input:RoomCode,session_token_input:SessionToken,target_player_id_input:TargetPlayerId})}
 export function ReturnToLobby(RoomCode:string,SessionToken:string){return Rpc('return_to_lobby',{room_code_input:RoomCode,session_token_input:SessionToken})}
