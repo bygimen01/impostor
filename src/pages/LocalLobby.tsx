@@ -10,6 +10,9 @@ export default function LocalLobby(){
 const Navigate=useNavigate()
 const {Players,AddPlayer,RemovePlayer,BeginRound,Settings,UpdateSettings}=UseLocalGame()
 const [Name,SetName]=useState('')
+const [StartError,SetStartError]=useState('')
+const [Starting,SetStarting]=useState(false)
+async function Start(){SetStartError('');SetStarting(true);try{await BeginRound();Navigate('/local/game')}catch(ErrorValue){SetStartError(String(ErrorValue))}finally{SetStarting(false)}}
 function Add(){if(!Name.trim()||Players.length>=12)return;AddPlayer(Name);SetName('')}
 function ChangeSettings(Patch:Partial<GameSettings>){UpdateSettings(Patch)}
 function ToggleCategory(Category:string){const Current=Settings.Categories;const Next=Current.includes(Category)?Current.filter(Value=>Value!==Category):[...Current,Category];ChangeSettings({Categories:Next.length?Next:['Обычный режим']})}
@@ -23,5 +26,5 @@ return <main className="shell localLobby"><Header/><div className="pageHead"><di
 <div className="settingsBlock"><span className="settingLabel">Категории</span><div className="categoryChoices">{Categories.map(Category=><button key={Category} className={Settings.Categories.includes(Category)?'active':''} onClick={()=>ToggleCategory(Category)}>{Category}</button>)}</div><small className="settingHelp">Можно выбрать несколько категорий</small></div>
 <div className="settingsBlock"><span className="settingLabel">Импосторов</span><div className="stepper"><button onClick={()=>ChangeSettings({ImpostorCount:Math.max(1,Settings.ImpostorCount-1)})}>−</button><b>{Settings.ImpostorCount}</b><button onClick={()=>ChangeSettings({ImpostorCount:Math.min(3,Math.max(1,Players.length-1),Settings.ImpostorCount+1)})}>+</button></div></div>
 <div className="roomQuickStats"><span>♾ Раунды без лимита</span></div>
-</section><div className="lobbyActions"><Button disabled={Players.length<3} onClick={()=>{BeginRound();Navigate('/local/game')}}>Начать игру</Button><Button className="secondary rulesAction" onClick={()=>Navigate('/rules')}>Как играть</Button></div></main>
+</section>{StartError&&<div className="error">{StartError}</div>}<div className="lobbyActions"><Button disabled={Players.length<3||Starting} onClick={()=>void Start()}>Начать игру</Button><Button className="secondary rulesAction" onClick={()=>Navigate('/rules')}>Как играть</Button></div></main>
 }
