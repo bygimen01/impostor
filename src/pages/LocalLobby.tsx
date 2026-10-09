@@ -8,7 +8,7 @@ import type {GameSettings} from '../game/types'
 const HintOptions=[['NONE','Без подсказок'],['STANDARD','Всегда'],['RANDOM','Случайная'],['RANDOM_PRESENCE','50 / 50']] as const
 export default function LocalLobby(){
 const Navigate=useNavigate()
-const {Players,AddPlayer,RemovePlayer,BeginRound,Settings,UpdateSettings}=UseLocalGame()
+const {Players,AddPlayer,RemovePlayer,BeginRound,Settings,UpdateSettings,Reset,Round}=UseLocalGame()
 const [Name,SetName]=useState('')
 const [StartError,SetStartError]=useState('')
 const [Starting,SetStarting]=useState(false)
@@ -26,5 +26,5 @@ return <main className="shell localLobby"><Header/><div className="pageHead"><di
 <div className="settingsBlock"><span className="settingLabel">Категории</span><div className="categoryChoices">{Categories.map(Category=><button key={Category} className={Settings.Categories.includes(Category)?'active':''} onClick={()=>ToggleCategory(Category)}>{Category}</button>)}</div><small className="settingHelp">Можно выбрать несколько категорий</small></div>
 <div className="settingsBlock"><span className="settingLabel">Импосторов</span><div className="stepper"><button onClick={()=>ChangeSettings({ImpostorCount:Math.max(1,Settings.ImpostorCount-1)})}>−</button><b>{Settings.ImpostorCount}</b><button onClick={()=>ChangeSettings({ImpostorCount:Math.min(3,Math.max(1,Players.length-1),Settings.ImpostorCount+1)})}>+</button></div></div>
 <div className="roomQuickStats"><span>♾ Раунды без лимита</span></div>
-</section>{StartError&&<div className="error">{StartError}</div>}<div className="lobbyActions"><Button disabled={Players.length<3||Starting} onClick={()=>void Start()}>Начать игру</Button><Button className="secondary rulesAction" onClick={()=>Navigate('/rules')}>Как играть</Button></div></main>
+</section>{StartError&&<div className="error">{StartError}</div>}<div className="lobbyActions">{(Players.length>0||Round)&&<Button className="secondary" onClick={()=>{if(window.confirm("Закрыть локальную игру? Игроки, настройки и история раундов будут сброшены.")){Reset();SetName("");SetStartError("")}}}>Закрыть локальную игру · начать с нуля</Button>}<Button disabled={Players.length<3||Starting} onClick={()=>void Start()}>Начать игру</Button><Button className="secondary rulesAction" onClick={()=>Navigate('/rules')}>Как играть</Button></div></main>
 }
