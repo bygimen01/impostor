@@ -1,5 +1,6 @@
 import {Navigate,useNavigate} from 'react-router-dom'
 import {useState} from 'react'
+import type {ReactNode} from 'react'
 import Header from '../components/Header'
 import Button from '../components/Button'
 import RoleCard from '../components/RoleCard'
@@ -31,7 +32,7 @@ const Caught=Leaders.length===1&&Impostors.includes(Leaders[0])
 function NewRound(){BeginRound();SetStage('REVEAL');SetIndex(0);SetCycle(1);SetReady(false);SetVotes({});SetGuessResult(null);SetGuessStage(null)}
 function BeginVoting(){SetIndex(0);SetReady(false);SetVotes({});SetStage('VOTE_HANDOFF')}
 function ResolveGuess(Correct:boolean,Kind:'DURING'|'LAST'){SetGuessResult(Correct?'CORRECT':'WRONG');SetGuessStage(Kind);SetStage('RESULT')}
-const Shell=({children}:{children:React.ReactNode})=><main className="shell gameScreen"><Header/>{children}</main>
+const Shell=({children}:{children:ReactNode})=><main className="shell gameScreen"><Header/>{children}</main>
 if(Stage==='REVEAL'){
 if(Index>=Players.length)return <Shell><section className="handoff celebrate"><div className="bigSticker">🎭</div><div className="eyebrow">ВСЕ ГОТОВЫ</div><h1>Роли розданы</h1><p>Каждый даёт ассоциацию. Не называйте загаданное слово.</p><Button onClick={()=>{SetIndex(0);SetStage('TURNS')}}>Начать круг</Button></section></Shell>
 return <Shell>{!Ready?<section className="handoff"><div className="handoffSticker">📱</div><div className="eyebrow">ИГРОК {Index+1} ИЗ {Players.length}</div><h1>Передайте телефон</h1><div className="namePlate">{CurrentPlayer?.Name}</div><p>Убедитесь, что экран видите только вы.</p><Button onClick={()=>SetReady(true)}>Телефон у меня</Button></section>:<section className="roleStage"><RoleCard Role={CurrentAssignment.Role} Word={Word.Word} Hint={Round.Hint}/><Button className="secondary handoffButton" onClick={()=>{SetReady(false);SetIndex(Value=>Value+1)}}>Скрыть и передать дальше</Button></section>}</Shell>
