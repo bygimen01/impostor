@@ -67,7 +67,7 @@ begin
       result_hint := hint_items[least(2,cardinality(hint_items))];
     end if;
   end if;
-  return jsonb_build_object('id',candidate->>'id','word',coalesce(candidate->>'word',candidate->>'name'),'category',coalesce(candidate->>'category',candidate->>'category_name','Обычный режим'),'hint',result_hint);
+  return jsonb_build_object('id',candidate->>'id','word',coalesce(candidate->>'text',candidate->>'word',candidate->>'name'),'category',coalesce(candidate->>'category',candidate->>'category_name','Обычный режим'),'hint',result_hint);
 end;
 $$;
 grant execute on function public.get_local_round_word(text[],text) to anon, authenticated;
