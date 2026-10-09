@@ -5,7 +5,7 @@ import Header from '../components/Header'
 import Button from '../components/Button'
 import RoleCard from '../components/RoleCard'
 import {UseLocalGame} from '../store/localGame'
-import {CurrentLocalWords} from '../services/localWords'
+import {CurrentLocalWord} from '../services/localWords'
 type Stage='REVEAL'|'TURNS'|'DISCUSSION'|'CHOOSE'|'VOTE_RESULT'|'LAST_CHANCE'|'RESULT'
 export default function LocalGame(){
 const NavigateTo=useNavigate()
@@ -18,7 +18,7 @@ const [Selected,SetSelected]=useState<string[]>([])
 const [GuessResult,SetGuessResult]=useState<'CORRECT'|'WRONG'|null>(null)
 const [GuessStage,SetGuessStage]=useState<'DURING'|'LAST'|null>(null)
 if(!Round)return <Navigate to="/local" replace/>
-const Word=CurrentLocalWords.find(Entry=>Entry.Id===Round.WordId)
+const Word=CurrentLocalWord&&CurrentLocalWord.id===Round.WordId?{Word:CurrentLocalWord.word,Category:CurrentLocalWord.category}:null
 if(!Word)return <Navigate to="/local" replace/>
 const Ordered=[...Round.Assignments].sort((First,Second)=>First.TurnPosition-Second.TurnPosition)
 const CurrentAssignment=Ordered[Index%Ordered.length]
