@@ -5,7 +5,7 @@ export async function GetLocalRoundWord(Categories:string[],HintMode:string):Pro
 if(!Supabase)throw new Error('Supabase не настроен')
 const {data,error}=await Supabase.rpc('get_local_round_word',{categories_input:Categories,hint_mode_input:HintMode})
 if(error)throw new Error('Ошибка загрузки слова: '+error.message)
-if(!data||typeof data.word!=='string')throw new Error('Сервер не вернул слово')
+if(!data||typeof data!=='object'||typeof data.word!=='string'||!data.word.trim()){const Details=JSON.stringify(data);throw new Error('get_local_round_word вернул неверный ответ: '+(Details?.slice(0,500)??'null')+'. Проверьте SQL-функцию в Supabase.') }
 CurrentLocalWord={id:String(data.id),word:data.word,category:data.category??'Обычный режим',hint:data.hint??null}
 return CurrentLocalWord
 }
