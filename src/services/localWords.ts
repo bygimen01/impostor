@@ -2,6 +2,7 @@ import {Supabase} from './supabase'
 import type {WordEntry,HintStrength} from '../game/types'
 
 type DatabaseWord={id:string;word:string;category:string;difficulty:number|null;tags:string[]|null;word_hints:{text:string;strength:number}[]|null}
+export let CurrentLocalWords:WordEntry[]=[]
 export async function LoadLocalWords():Promise<WordEntry[]>{
 if(!Supabase)throw new Error('Нет подключения к Supabase. Для локальной игры с общим словарём нужен интернет.')
 const All:WordEntry[]=[]
@@ -16,5 +17,6 @@ All.push({Id:String(Entry.id),Word:Entry.word,Category:Entry.category,Difficulty
 if(Batch.length<500)break
 }
 if(!All.length)throw new Error('Словарь Supabase пуст или закрыт политиками доступа. Проверьте права чтения words и word_hints.')
+CurrentLocalWords=All
 return All
 }
