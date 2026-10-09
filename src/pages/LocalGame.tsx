@@ -5,7 +5,7 @@ import Header from '../components/Header'
 import Button from '../components/Button'
 import RoleCard from '../components/RoleCard'
 import {UseLocalGame} from '../store/localGame'
-import {Words} from '../data/words'
+import {CurrentLocalWords} from '../services/localWords'
 type Stage='REVEAL'|'TURNS'|'DISCUSSION'|'VOTE_HANDOFF'|'VOTE'|'VOTE_RESULT'|'LAST_CHANCE'|'RESULT'
 export default function LocalGame(){
 const NavigateTo=useNavigate()
@@ -18,7 +18,7 @@ const [Votes,SetVotes]=useState<Record<string,string>>({})
 const [GuessResult,SetGuessResult]=useState<'CORRECT'|'WRONG'|null>(null)
 const [GuessStage,SetGuessStage]=useState<'DURING'|'LAST'|null>(null)
 if(!Round)return <Navigate to="/local" replace/>
-const Word=Words.find(Entry=>Entry.Id===Round.WordId)
+const Word=CurrentLocalWords.find(Entry=>Entry.Id===Round.WordId)
 if(!Word)return <Navigate to="/local" replace/>
 const Ordered=[...Round.Assignments].sort((First,Second)=>First.TurnPosition-Second.TurnPosition)
 const CurrentAssignment=Ordered[Index%Ordered.length]
@@ -29,7 +29,7 @@ Object.values(Votes).forEach(Id=>VoteCounts[Id]=(VoteCounts[Id]??0)+1)
 const MaxVotes=Math.max(0,...Object.values(VoteCounts))
 const Leaders=Object.keys(VoteCounts).filter(Id=>VoteCounts[Id]===MaxVotes)
 const Caught=Leaders.length===1&&Impostors.includes(Leaders[0])
-function NewRound(){BeginRound();SetStage('REVEAL');SetIndex(0);SetCycle(1);SetReady(false);SetVotes({});SetGuessResult(null);SetGuessStage(null)}
+async function NewRound(){await BeginRound();SetStage('REVEAL');SetIndex(0);SetCycle(1);SetReady(false);SetVotes({});SetGuessResult(null);SetGuessStage(null)}
 function BeginVoting(){SetIndex(0);SetReady(false);SetVotes({});SetStage('VOTE_HANDOFF')}
 function ResolveGuess(Correct:boolean,Kind:'DURING'|'LAST'){SetGuessResult(Correct?'CORRECT':'WRONG');SetGuessStage(Kind);SetStage('RESULT')}
 const Shell=({children}:{children:ReactNode})=><main className="shell gameScreen"><Header/>{children}</main>
